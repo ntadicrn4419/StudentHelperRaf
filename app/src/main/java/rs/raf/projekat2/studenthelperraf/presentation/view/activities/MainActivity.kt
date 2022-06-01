@@ -25,11 +25,6 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager,
                 this
             )
-        //dodato
-//        supportFragmentManager.commit {
-//            setReorderingAllowed(true)
-//        }
-        //
         binding.tabLayout.setupWithViewPager(binding.viewPager)
     }
 }

@@ -48,12 +48,16 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
     private fun initListeners() {
         binding.newNoteBtn.setOnClickListener {
-            val transaction = activity?.supportFragmentManager?.beginTransaction()
-            if (transaction != null) {
-                transaction.replace(R.id.fragment_note_list_layout, SingleNoteFragment())
-                transaction.disallowAddToBackStack()
-                transaction.commit()
-            }
+//            val transaction = activity?.supportFragmentManager?.beginTransaction()
+//            if (transaction != null) {
+//                transaction.replace(R.id.fragment_note_list_layout, SingleNoteFragment())
+//                transaction.disallowAddToBackStack()
+//                transaction.commit()
+//            }
+            activity?.supportFragmentManager?.beginTransaction()
+                ?.replace(R.id.main_layout, SingleNoteFragment())
+                ?.addToBackStack(null)?.commit()
+
         }
     }
 

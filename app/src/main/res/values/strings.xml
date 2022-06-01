@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">StudentHelperRaf</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="filter_fragment_title">Filter fragment</string>
-    <string name="note_list_fragment_title">Note list fragment</string>
+    <string name="filter_fragment_title">Schedule</string>
+    <string name="statistics_fragment_title">Statistics</string>
+    <string name="profile_fragment_title">Profile</string>
+    <string name="note_list_fragment_title">Notes</string>
     <string name="single_note_fragment_title">Single note fragment</string>
     <string name="button_search">Search</string>
     <string name="teacher_subject">Teacher/Subject</string>
