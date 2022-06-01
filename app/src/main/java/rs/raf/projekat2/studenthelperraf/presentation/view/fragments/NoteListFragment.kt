@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rs.raf.projekat2.studenthelperraf.R
@@ -14,6 +16,7 @@ import rs.raf.projekat2.studenthelperraf.presentation.contract.MainContract
 import rs.raf.projekat2.studenthelperraf.presentation.view.recycler.adapter.NoteAdapter
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForLocalNoteState
 import rs.raf.projekat2.studenthelperraf.presentation.viewmodel.MainViewModel
+import timber.log.Timber
 
 
 class NoteListFragment : Fragment(R.layout.fragment_note_list) {
@@ -48,16 +51,9 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
     private fun initListeners() {
         binding.newNoteBtn.setOnClickListener {
-//            val transaction = activity?.supportFragmentManager?.beginTransaction()
-//            if (transaction != null) {
-//                transaction.replace(R.id.fragment_note_list_layout, SingleNoteFragment())
-//                transaction.disallowAddToBackStack()
-//                transaction.commit()
-//            }
             activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.main_layout, SingleNoteFragment())
+                ?.replace(R.id.main_fragment_container, NewNoteFragment())
                 ?.addToBackStack(null)?.commit()
-
         }
     }
 
@@ -68,20 +64,21 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
     }
 
     private fun initObservers() {
-//        mainViewModel.localNoteState.observe(viewLifecycleOwner, Observer {
-//            Timber.e(it.toString())
-//            renderState(it)
-//        })
-        //mainViewModel.getAllNotes()
+        mainViewModel.localNoteState.observe(viewLifecycleOwner, Observer {
+            Timber.e(it.toString())
+            renderState(it)
+        })
+        mainViewModel.getAllNotes()
     }
 
     private fun renderState(state: ForLocalNoteState) {
         when (state) {
             is ForLocalNoteState.Success -> {
                 adapter.submitList(state.notes)
+                binding.noteRv.isVisible=true
             }
             is ForLocalNoteState.Error -> {
-                Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
             }
         }
     }

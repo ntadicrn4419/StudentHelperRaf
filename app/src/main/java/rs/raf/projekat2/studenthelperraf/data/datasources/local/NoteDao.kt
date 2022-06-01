@@ -23,6 +23,6 @@ abstract class NoteDao {
     abstract fun deleteAll():Completable
 
     @Transaction
-    @Query("UPDATE notes SET title = :title, content = :content, archived =:archived")
-    abstract fun update(title: String, content: String, archived: Boolean): Completable
+    @Query("UPDATE notes SET title = :title, content = :content, archived = :archived WHERE id = :id")
+    abstract fun update(id:Int, title: String, content: String, archived: Boolean): Completable
 }

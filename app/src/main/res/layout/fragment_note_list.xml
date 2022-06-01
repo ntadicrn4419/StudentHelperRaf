@@ -10,10 +10,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/noteRv"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="500dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/new_note_btn"
+        android:paddingTop="20dp"
+        android:clipToPadding="false"
         />
 
     <Button

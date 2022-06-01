@@ -1,6 +1,5 @@
 package rs.raf.projekat2.studenthelperraf.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -8,6 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import rs.raf.projekat2.studenthelperraf.data.models.MyFilter
+import rs.raf.projekat2.studenthelperraf.data.models.Note
 import rs.raf.projekat2.studenthelperraf.data.models.Resource
 import rs.raf.projekat2.studenthelperraf.data.models.Term
 import rs.raf.projekat2.studenthelperraf.data.repositories.NoteRepository
@@ -27,132 +27,132 @@ class MainViewModel(
     private val subscriptions = CompositeDisposable()
     override val remoteTermState: MutableLiveData<ForRemoteTermState> = MutableLiveData()
     override val localTermState: MutableLiveData<ForLocalTermState> = MutableLiveData()
-    override val localNoteState: LiveData<ForLocalNoteState> = MutableLiveData()
+    override val localNoteState: MutableLiveData<ForLocalNoteState> = MutableLiveData()
 
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
     private val publishSubjectMyFilter : PublishSubject<MyFilter> = PublishSubject.create()
 
     init {
-        val subscription = publishSubject
-            .debounce(200, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .switchMap {
-                termRepository
-                    .getAllBySubject(it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError {
-                        Timber.e("Error in publish subject")
-                        Timber.e(it)
-                    }
-            }
-            .subscribe(
-                {
-                    remoteTermState.value = ForRemoteTermState.Success(it)
-                },
-                {
-                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
-                    Timber.e(it)
-                }
-            )
-        subscriptions.add(subscription)
-        //---------------------------------------
-        val subscription2 = publishSubject
-            .debounce(200, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .switchMap {
-                termRepository
-                    .getAllByGroup(it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError {
-                        Timber.e("Error in publish subject")
-                        Timber.e(it)
-                    }
-            }
-            .subscribe(
-                {
-                    remoteTermState.value = ForRemoteTermState.Success(it)
-                },
-                {
-                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
-                    Timber.e(it)
-                }
-            )
-        subscriptions.add(subscription2)
-        //---------------------------------------
-        val subscription3 = publishSubject
-            .debounce(200, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .switchMap {
-                termRepository
-                    .getAllByTeacher(it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError {
-                        Timber.e("Error in publish subject")
-                        Timber.e(it)
-                    }
-            }
-            .subscribe(
-                {
-                    remoteTermState.value = ForRemoteTermState.Success(it)
-                },
-                {
-                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
-                    Timber.e(it)
-                }
-            )
-        subscriptions.add(subscription3)
-        //---------------------------------------
-        val subscription4 = publishSubject
-            .debounce(200, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .switchMap {
-                termRepository
-                    .getAllByDay(it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError {
-                        Timber.e("Error in publish subject")
-                        Timber.e(it)
-                    }
-            }
-            .subscribe(
-                {
-                    remoteTermState.value = ForRemoteTermState.Success(it)
-                },
-                {
-                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
-                    Timber.e(it)
-                }
-            )
-        subscriptions.add(subscription4)
-        //---------------------------------------
-        val subscription5 = publishSubject
-            .debounce(200, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .switchMap {
-                termRepository
-                    .getAllByTime(it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError {
-                        Timber.e("Error in publish subject")
-                        Timber.e(it)
-                    }
-            }
-            .subscribe(
-                {
-                    remoteTermState.value = ForRemoteTermState.Success(it)
-                },
-                {
-                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
-                    Timber.e(it)
-                }
-            )
-        subscriptions.add(subscription5)
-        //---------------------------------------
+//        val subscription = publishSubject
+//            .debounce(200, TimeUnit.MILLISECONDS)
+//            .distinctUntilChanged()
+//            .switchMap {
+//                termRepository
+//                    .getAllBySubject(it)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .doOnError {
+//                        Timber.e("Error in publish subject")
+//                        Timber.e(it)
+//                    }
+//            }
+//            .subscribe(
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Success(it)
+//                },
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
+//                    Timber.e(it)
+//                }
+//            )
+//        subscriptions.add(subscription)
+//        //---------------------------------------
+//        val subscription2 = publishSubject
+//            .debounce(200, TimeUnit.MILLISECONDS)
+//            .distinctUntilChanged()
+//            .switchMap {
+//                termRepository
+//                    .getAllByGroup(it)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .doOnError {
+//                        Timber.e("Error in publish subject")
+//                        Timber.e(it)
+//                    }
+//            }
+//            .subscribe(
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Success(it)
+//                },
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
+//                    Timber.e(it)
+//                }
+//            )
+//        subscriptions.add(subscription2)
+//        //---------------------------------------
+//        val subscription3 = publishSubject
+//            .debounce(200, TimeUnit.MILLISECONDS)
+//            .distinctUntilChanged()
+//            .switchMap {
+//                termRepository
+//                    .getAllByTeacher(it)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .doOnError {
+//                        Timber.e("Error in publish subject")
+//                        Timber.e(it)
+//                    }
+//            }
+//            .subscribe(
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Success(it)
+//                },
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
+//                    Timber.e(it)
+//                }
+//            )
+//        subscriptions.add(subscription3)
+//        //---------------------------------------
+//        val subscription4 = publishSubject
+//            .debounce(200, TimeUnit.MILLISECONDS)
+//            .distinctUntilChanged()
+//            .switchMap {
+//                termRepository
+//                    .getAllByDay(it)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .doOnError {
+//                        Timber.e("Error in publish subject")
+//                        Timber.e(it)
+//                    }
+//            }
+//            .subscribe(
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Success(it)
+//                },
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
+//                    Timber.e(it)
+//                }
+//            )
+//        subscriptions.add(subscription4)
+//        //---------------------------------------
+//        val subscription5 = publishSubject
+//            .debounce(200, TimeUnit.MILLISECONDS)
+//            .distinctUntilChanged()
+//            .switchMap {
+//                termRepository
+//                    .getAllByTime(it)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .doOnError {
+//                        Timber.e("Error in publish subject")
+//                        Timber.e(it)
+//                    }
+//            }
+//            .subscribe(
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Success(it)
+//                },
+//                {
+//                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
+//                    Timber.e(it)
+//                }
+//            )
+//        subscriptions.add(subscription5)
+//        //---------------------------------------
         val subscription6 = publishSubjectMyFilter
             .debounce(200, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
@@ -247,12 +247,85 @@ class MainViewModel(
                     localTermState.value = ForLocalTermState.Success
                 },
                 {
-                    localTermState.value = ForLocalTermState.Error("Error happened while adding movie")
+                    localTermState.value = ForLocalTermState.Error("Error happened while adding term")
                     Timber.e(it)
                 }
             )
         subscriptions.add(subscription)
     }
+    override fun addNote(note: Note) {
+        val subscription = noteRepository
+            .insert(note)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    localNoteState.value = ForLocalNoteState.AddedNote("Successfully added note")
+                },
+                {
+                    localNoteState.value = ForLocalNoteState.Error("Error happened while adding note")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun getAllNotes() {
+        val subscription = noteRepository
+            .getAll()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    localNoteState.value = ForLocalNoteState.Success(it)
+                },
+                {
+                    localNoteState.value = ForLocalNoteState.Error("Error happened while fetching notes from db")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun getNoteById(id: Int) {
+        //???
+        //zasto se npr getAllTerms i getTermBySubject razlikuju?
+    }
+
+    override fun deleteNote(id: Int) {
+        val subscription = noteRepository
+            .delete(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    localNoteState.value = ForLocalNoteState.DeletedNote("Successfully deleted note.")
+                },
+                {
+                    localNoteState.value = ForLocalNoteState.Error("Error happened while deleting note")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun updateNote(note: Note) {
+        val subscription = noteRepository
+            .update(note)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    localNoteState.value = ForLocalNoteState.DeletedNote("Successfully updated note.")
+                },
+                {
+                    localNoteState.value = ForLocalNoteState.Error("Error happened while updating note")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
 
     override fun onCleared() {
         super.onCleared()

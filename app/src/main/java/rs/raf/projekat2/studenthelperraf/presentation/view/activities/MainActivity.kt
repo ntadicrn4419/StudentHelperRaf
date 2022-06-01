@@ -2,8 +2,9 @@ package rs.raf.projekat2.studenthelperraf.presentation.view.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import rs.raf.projekat2.studenthelperraf.R
 import rs.raf.projekat2.studenthelperraf.databinding.ActivityMainBinding
-import rs.raf.projekat2.studenthelperraf.presentation.view.adapters.MainPagerAdapter
+import rs.raf.projekat2.studenthelperraf.presentation.view.fragments.MainFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -16,15 +17,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        initUi()
+        initFragment()
     }
 
-    private fun initUi() {
-        binding.viewPager.adapter =
-            MainPagerAdapter(
-                supportFragmentManager,
-                this
-            )
-        binding.tabLayout.setupWithViewPager(binding.viewPager)
+
+    private fun initFragment() {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.main_fragment_container, MainFragment())
+        transaction.commit()
     }
 }

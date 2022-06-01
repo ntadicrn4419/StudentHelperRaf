@@ -10,5 +10,5 @@ interface NoteRepository {
     fun getAll(): Observable<List<Note>>
     fun delete(id: Int): Completable
     fun deleteAll(): Completable
-    fun update(title: String, content: String, archived: Boolean): Completable
+    fun update(note: Note): Completable
 }

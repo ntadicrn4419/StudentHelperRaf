@@ -56,7 +56,7 @@ class NoteRepositoryImplementation(
         return localDataSource.deleteAll()
     }
 
-    override fun update(title: String, content: String, archived: Boolean): Completable {
-        return localDataSource.update(title, content, archived)
+    override fun update(note: Note): Completable {
+        return localDataSource.update(note.id, note.title, note.content, note.archived)
     }
 }
