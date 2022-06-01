@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">StudentHelperRaf</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="filter_fragment_title">Filter fragment</string>
+    <string name="note_list_fragment_title">Note list fragment</string>
+    <string name="single_note_fragment_title">Single note fragment</string>
+    <string name="button_search">Search</string>
+    <string name="teacher_subject">Teacher/Subject</string>
+    <string name="note_title_text_holder">This is a note title</string>
+    <string name="note_content_text_holder">This is a note content...</string>
+    <string name="single_note_close_btn">Close note</string>
+    <string name="single_note_edit_btn">Edit</string>
+
+
+    <string-array name="group_filter_array">
+        <item>101</item>
+        <item>102</item>
+        <item>103</item>
+        <item>104</item>
+        <item>105</item>
+<!--        dodati sve grupe-->
+    </string-array>
+
+    <string-array name="day_filter_array">
+        <item>PON</item>
+        <item>UTO</item>
+        <item>SRE</item>
+        <item>CET</item>
+        <item>PET</item>
+    </string-array>
+
+</resources>
