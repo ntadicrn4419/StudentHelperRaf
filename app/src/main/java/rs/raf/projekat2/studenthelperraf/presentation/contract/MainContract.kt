@@ -28,7 +28,7 @@ interface MainContract {
         fun getNoteById(id: Int)
         fun addNote(note: Note)
         fun deleteNote(id: Int)
-        fun updateNote(note: Note)
+        fun updateNote(id: Int, title: String, content: String, archived: Boolean)
 
     }
 }

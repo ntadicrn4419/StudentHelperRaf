@@ -31,6 +31,7 @@ class MainViewModel(
 
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
     private val publishSubjectMyFilter : PublishSubject<MyFilter> = PublishSubject.create()
+    private val publishSubjectForNote: PublishSubject<Int> = PublishSubject.create()
 
     init {
 //        val subscription = publishSubject
@@ -176,6 +177,31 @@ class MainViewModel(
                 }
             )
         subscriptions.add(subscription6)
+        //--------------------------------------------------------------------------------
+        val subscription7 = publishSubjectForNote
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .distinctUntilChanged()
+            .switchMap {
+                noteRepository
+                    .getById(it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError {
+                        Timber.e("Error in publish subject for note")
+                        Timber.e(it)
+                    }
+            }
+            .subscribe(
+                {
+                    localNoteState.value = ForLocalNoteState.GetNote("Successfully got note")
+                },
+                {
+                    localNoteState.value = ForLocalNoteState.Error("Error happened while fetching data from db")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription7)
+
     }
 
     override fun fetchAllTerms() {
@@ -286,12 +312,6 @@ class MainViewModel(
             )
         subscriptions.add(subscription)
     }
-
-    override fun getNoteById(id: Int) {
-        //???
-        //zasto se npr getAllTerms i getTermBySubject razlikuju?
-    }
-
     override fun deleteNote(id: Int) {
         val subscription = noteRepository
             .delete(id)
@@ -309,9 +329,9 @@ class MainViewModel(
         subscriptions.add(subscription)
     }
 
-    override fun updateNote(note: Note) {
+    override fun updateNote(id: Int, title: String, content: String, archived: Boolean) {
         val subscription = noteRepository
-            .update(note)
+            .update(id, title, content, archived)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -326,6 +346,9 @@ class MainViewModel(
         subscriptions.add(subscription)
     }
 
+    override fun getNoteById(id: Int){
+        publishSubjectForNote.onNext(id)
+    }
 
     override fun onCleared() {
         super.onCleared()

@@ -7,5 +7,6 @@ sealed class ForLocalNoteState {
     class AddedNote(val message: String) : ForLocalNoteState()// successfully added note
     class DeletedNote(val message: String) : ForLocalNoteState()// successfully deleted note
     class UpdatedNote(val message: String) : ForLocalNoteState()// successfully updated note
+    class GetNote(val message: String) : ForLocalNoteState()// successfully got note
     data class Error(val message: String): ForLocalNoteState()
 }

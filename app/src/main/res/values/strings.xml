@@ -10,7 +10,7 @@
     <string name="note_title_text_holder">This is a note title</string>
     <string name="note_content_text_holder">This is a note content...</string>
     <string name="single_note_close_btn">Close note</string>
-    <string name="single_note_edit_btn">Edit</string>
+    <string name="single_note_edit_btn">Save changes</string>
     <string name="new_note_close_btn">Close</string>
     <string name="new_note_save_btn">Save</string>
 

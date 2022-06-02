@@ -13,6 +13,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rs.raf.projekat2.studenthelperraf.R
 import rs.raf.projekat2.studenthelperraf.databinding.FragmentNoteListBinding
 import rs.raf.projekat2.studenthelperraf.presentation.contract.MainContract
+import rs.raf.projekat2.studenthelperraf.presentation.view.activities.MainActivity
 import rs.raf.projekat2.studenthelperraf.presentation.view.recycler.adapter.NoteAdapter
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForLocalNoteState
 import rs.raf.projekat2.studenthelperraf.presentation.viewmodel.MainViewModel
@@ -59,7 +60,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
     private fun initRecycler() {
         binding.noteRv.layoutManager = LinearLayoutManager(context)
-        adapter = NoteAdapter()
+        adapter = NoteAdapter(this.mainViewModel, this.activity as MainActivity)
         binding.noteRv.adapter = adapter
     }
 
