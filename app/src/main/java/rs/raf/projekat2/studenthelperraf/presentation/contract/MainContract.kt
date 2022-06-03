@@ -18,11 +18,12 @@ interface MainContract {
         fun fetchAllTerms()
         fun getAllTerms()
         fun addTerm(term: Term)
-        fun getTermsBySubject(subject: String)
-        fun getTermsByGroup(group: String)
-        fun getTermsByDay(day: String)
-        fun getTermsByTeacher(teacher: String)
         fun getTermsByAllFilters(filter: MyFilter)
+
+//        fun getTermsBySubject(subject: String)
+//        fun getTermsByGroup(group: String)
+//        fun getTermsByDay(day: String)
+//        fun getTermsByTeacher(teacher: String)
 
         fun getAllNotes()
         fun getNoteById(id: Int)

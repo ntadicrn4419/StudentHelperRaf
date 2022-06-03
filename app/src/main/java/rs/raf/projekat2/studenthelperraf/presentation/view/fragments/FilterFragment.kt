@@ -76,10 +76,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     }
 
     private fun initListeners() {
-//        binding.inputEt.doAfterTextChanged {
-//            val filter = it.toString()
-//            mainViewModel.getTermsBySubject(filter)
-//        }
         binding.searchBtn.setOnClickListener {
             val group = binding.groupFilter.selectedItem.toString()
             val day = binding.dayFilter.selectedItem.toString()
@@ -91,7 +87,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             }else{
                 Toast.makeText(activity,"Wrong filters. You have to fill all fields.",Toast.LENGTH_LONG).show();
             }
-            println(group + "-" + day + "-" + teacherOrSubject)
         }
     }
 
@@ -100,13 +95,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             Timber.e(it.toString())
             renderState(it)
         })
-        // Pravimo subscription kad observablu koji je vezan za getAll iz baze
-        // Na svaku promenu tabele, obserrvable ce emitovati na onNext sve elemente
-        // koji zadovoljavaju query
         mainViewModel.getAllTerms()
-        // Pokrecemo operaciju dovlacenja podataka sa servera, kada podaci stignu,
-        // bice sacuvani u bazi, tada ce se triggerovati observable na koji smo se pretplatili
-        // preko metode getAllMovies()
         mainViewModel.fetchAllTerms()
     }
 

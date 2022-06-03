@@ -13,7 +13,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rs.raf.projekat2.studenthelperraf.R
 import rs.raf.projekat2.studenthelperraf.databinding.FragmentNoteListBinding
 import rs.raf.projekat2.studenthelperraf.presentation.contract.MainContract
-import rs.raf.projekat2.studenthelperraf.presentation.view.activities.MainActivity
 import rs.raf.projekat2.studenthelperraf.presentation.view.recycler.adapter.NoteAdapter
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForLocalNoteState
 import rs.raf.projekat2.studenthelperraf.presentation.viewmodel.MainViewModel
@@ -64,8 +63,8 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             if (isChecked) {
                 println("switch on")
                 //prikazati sve beleske
-                //mainViewModel.getAllNotes()
-                mainViewModel.getNotesByArchived(true)
+                mainViewModel.getAllNotes()
+                //mainViewModel.getNotesByArchived(true)
             }
             else {
                 println("switch off")
@@ -77,8 +76,29 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
     private fun initRecycler() {
         binding.noteRv.layoutManager = LinearLayoutManager(context)
-        adapter = NoteAdapter(this.mainViewModel, this.activity as MainActivity)
+        adapter = NoteAdapter(::funDeleteBtnListener, ::funEditBtnListener, ::funArchiveBtnListener)
         binding.noteRv.adapter = adapter
+    }
+
+    private fun funDeleteBtnListener(noteId: Int){
+        mainViewModel.deleteNote(noteId)
+    }
+
+    private fun funEditBtnListener(noteId: Int, noteTitle: String, noteContent: String, noteArchived: Boolean){
+        val fragment = SingleNoteFragment()
+        val arguments = Bundle()
+        arguments.putInt("noteId", noteId)
+        arguments.putString("noteTitle", noteTitle)
+        arguments.putString("noteContent", noteContent)
+        arguments.putBoolean("noteArchived", noteArchived)
+        fragment.arguments = arguments
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.main_fragment_container, fragment)
+            ?.addToBackStack(null)?.commit()
+    }
+
+    private fun funArchiveBtnListener(noteId: Int, noteTitle: String, noteContent: String, noteArchived: Boolean){
+        mainViewModel.updateNote(noteId, noteTitle, noteContent, !noteArchived)
     }
 
     private fun initObservers() {

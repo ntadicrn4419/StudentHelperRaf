@@ -8,7 +8,7 @@ import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import rs.raf.projekat2.studenthelperraf.modules.coreModule
-import rs.raf.projekat2.studenthelperraf.modules.termModule
+import rs.raf.projekat2.studenthelperraf.modules.termsNotesModule
 import timber.log.Timber
 
 class StudentHelperApp : Application() {
@@ -29,7 +29,7 @@ class StudentHelperApp : Application() {
     private fun initKoin() {
         val modules = listOf(
             coreModule,
-            termModule
+            termsNotesModule
         )
         startKoin {
             androidLogger(Level.ERROR)

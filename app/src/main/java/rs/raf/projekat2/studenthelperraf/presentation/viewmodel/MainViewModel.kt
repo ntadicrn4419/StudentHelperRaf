@@ -32,63 +32,62 @@ class MainViewModel(
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
     private val publishSubjectMyFilter : PublishSubject<MyFilter> = PublishSubject.create()
     private val publishSubjectForNote: PublishSubject<Int> = PublishSubject.create()
-    private val publishSubjectForArchivedNotes: PublishSubject<Boolean> = PublishSubject.create()
 
     init {
-//        val subscription = publishSubject
-//            .debounce(200, TimeUnit.MILLISECONDS)
-//            .distinctUntilChanged()
-//            .switchMap {
-//                termRepository
-//                    .getAllBySubject(it)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError {
-//                        Timber.e("Error in publish subject")
-//                        Timber.e(it)
-//                    }
-//            }
-//            .subscribe(
-//                {
-//                    remoteTermState.value = ForRemoteTermState.Success(it)
-//                },
-//                {
-//                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
-//                    Timber.e(it)
-//                }
-//            )
-//        subscriptions.add(subscription)
-//        //---------------------------------------
-//        val subscription2 = publishSubject
-//            .debounce(200, TimeUnit.MILLISECONDS)
-//            .distinctUntilChanged()
-//            .switchMap {
-//                termRepository
-//                    .getAllByGroup(it)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError {
-//                        Timber.e("Error in publish subject")
-//                        Timber.e(it)
-//                    }
-//            }
-//            .subscribe(
-//                {
-//                    remoteTermState.value = ForRemoteTermState.Success(it)
-//                },
-//                {
-//                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
-//                    Timber.e(it)
-//                }
-//            )
-//        subscriptions.add(subscription2)
-//        //---------------------------------------
+        val subscription1 = publishSubjectMyFilter
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .distinctUntilChanged()
+            .switchMap {
+                termRepository
+                    .getAllByAllFilters(it.group, it.day, it.teacherOrSubject)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError {
+                        Timber.e("Error in publish subject doing getAllByAllFilters")
+                        Timber.e(it)
+                    }
+            }
+            .subscribe(
+                {
+                    remoteTermState.value = ForRemoteTermState.Success(it)
+                },
+                {
+                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription1)
+
+        val subscription2 = publishSubject
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .distinctUntilChanged()
+            .switchMap {
+                noteRepository
+                    .getAllByTitleOrContent(it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError {
+                        Timber.e("Error in publish subject doing getAllByTitleOrContent")
+                        Timber.e(it)
+                    }
+            }
+            .subscribe(
+                {
+                    localNoteState.value = ForLocalNoteState.SuccessfullyGotFilteredNotes(it)
+                },
+                {
+                    localNoteState.value = ForLocalNoteState.Error("Error happened while fetching data from db")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription2)
+
 //        val subscription3 = publishSubject
 //            .debounce(200, TimeUnit.MILLISECONDS)
 //            .distinctUntilChanged()
 //            .switchMap {
 //                termRepository
-//                    .getAllByTeacher(it)
+//                    .getAllBySubject(it)
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread())
 //                    .doOnError {
@@ -112,7 +111,7 @@ class MainViewModel(
 //            .distinctUntilChanged()
 //            .switchMap {
 //                termRepository
-//                    .getAllByDay(it)
+//                    .getAllByGroup(it)
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread())
 //                    .doOnError {
@@ -136,7 +135,7 @@ class MainViewModel(
 //            .distinctUntilChanged()
 //            .switchMap {
 //                termRepository
-//                    .getAllByTime(it)
+//                    .getAllByTeacher(it)
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread())
 //                    .doOnError {
@@ -155,103 +154,29 @@ class MainViewModel(
 //            )
 //        subscriptions.add(subscription5)
 //        //---------------------------------------
-        val subscription6 = publishSubjectMyFilter
-            .debounce(200, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .switchMap {
-                termRepository
-                    .getAllByAllFilters(it.group, it.day, it.teacherOrSubject)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError {
-                        Timber.e("Error in publish subject")
-                        Timber.e(it)
-                    }
-            }
-            .subscribe(
-                {
-                    remoteTermState.value = ForRemoteTermState.Success(it)
-                },
-                {
-                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
-                    Timber.e(it)
-                }
-            )
-        subscriptions.add(subscription6)
-        //--------------------------------------------------------------------------------
-        val subscription7 = publishSubjectForNote
-            .debounce(200, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .switchMap {
-                noteRepository
-                    .getById(it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError {
-                        Timber.e("Error in publish subject for note")
-                        Timber.e(it)
-                    }
-            }
-            .subscribe(
-                {
-                    localNoteState.value = ForLocalNoteState.GetNote("Successfully got note")
-                },
-                {
-                    localNoteState.value = ForLocalNoteState.Error("Error happened while fetching data from db")
-                    Timber.e(it)
-                }
-            )
-        subscriptions.add(subscription7)
-        //--------------------------------------------------------------------------------
-        val subscription8 = publishSubject
-            .debounce(200, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .switchMap {
-                noteRepository
-                    .getAllByTitleOrContent(it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError {
-                        Timber.e("Error in publish subject for note")
-                        Timber.e(it)
-                    }
-            }
-            .subscribe(
-                {
-                    localNoteState.value = ForLocalNoteState.SuccessfullyGotFilteredNotes(it)
-                },
-                {
-                    localNoteState.value = ForLocalNoteState.Error("Error happened while fetching data from db")
-                    Timber.e(it)
-                }
-            )
-        subscriptions.add(subscription8)
-        //--------------------------------------------------------------------------------
-//        val subscription9 = publishSubjectForArchivedNotes
+//        val subscription6 = publishSubject
 //            .debounce(200, TimeUnit.MILLISECONDS)
 //            .distinctUntilChanged()
 //            .switchMap {
-//                noteRepository
-//                    .getAllByArchived(it)
+//                termRepository
+//                    .getAllByDay(it)
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread())
 //                    .doOnError {
-//                        Timber.e("Error in publish subject for note")
+//                        Timber.e("Error in publish subject")
 //                        Timber.e(it)
 //                    }
 //            }
 //            .subscribe(
 //                {
-//                    localNoteState.value = ForLocalNoteState.SuccessfullyGotNonArchiveNotes(it)
+//                    remoteTermState.value = ForRemoteTermState.Success(it)
 //                },
 //                {
-//                    localNoteState.value = ForLocalNoteState.Error("Error happened while fetching data from db")
+//                    remoteTermState.value = ForRemoteTermState.Error("Error happened while fetching data from db")
 //                    Timber.e(it)
 //                }
 //            )
-//        subscriptions.add(subscription9)
-
-
+//        subscriptions.add(subscription6)
     }
 
     override fun fetchAllTerms() {
@@ -293,21 +218,21 @@ class MainViewModel(
         subscriptions.add(subscription)
     }
 
-    override fun getTermsBySubject(subject: String) {
-        publishSubject.onNext(subject)
-    }
-
-    override fun getTermsByGroup(group: String) {
-        publishSubject.onNext(group)
-    }
-
-    override fun getTermsByDay(day: String) {
-        publishSubject.onNext(day)
-    }
-
-    override fun getTermsByTeacher(teacher: String) {
-        publishSubject.onNext(teacher)
-    }
+//    override fun getTermsBySubject(subject: String) {
+//        publishSubject.onNext(subject)
+//    }
+//
+//    override fun getTermsByGroup(group: String) {
+//        publishSubject.onNext(group)
+//    }
+//
+//    override fun getTermsByDay(day: String) {
+//        publishSubject.onNext(day)
+//    }
+//
+//    override fun getTermsByTeacher(teacher: String) {
+//        publishSubject.onNext(teacher)
+//    }
 
     override fun getTermsByAllFilters(filter: MyFilter) {
         publishSubjectMyFilter.onNext(filter)

@@ -7,9 +7,6 @@ import rs.raf.projekat2.studenthelperraf.databinding.LayoutItemTermBinding
 class TermViewHolder (private val itemBinding: LayoutItemTermBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
     fun bind(term: Term) {
-//        val str: String = term.subject + ", " + term.day + term.time + ", "  + term.classroom
-//        itemBinding.termpresenter.text = str
-//
         val str: String = term.subject + "-" + term.type
         itemBinding.subjectAndType.text = str
         itemBinding.teacher.text = term.teacher
@@ -18,7 +15,5 @@ class TermViewHolder (private val itemBinding: LayoutItemTermBinding) : Recycler
 
         itemBinding.day.text = term.day
         itemBinding.time.text = term.time
-
-
     }
 }

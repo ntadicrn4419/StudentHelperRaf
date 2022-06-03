@@ -10,7 +10,7 @@ import rs.raf.projekat2.studenthelperraf.data.repositories.TermRepository
 import rs.raf.projekat2.studenthelperraf.data.repositories.TermRepositoryImplementation
 import rs.raf.projekat2.studenthelperraf.presentation.viewmodel.MainViewModel
 
-val termModule = module {
+val termsNotesModule = module {
 
     viewModel { MainViewModel(termRepository = get(), noteRepository = get()) }
 
