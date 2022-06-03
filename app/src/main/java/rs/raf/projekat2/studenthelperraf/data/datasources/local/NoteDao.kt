@@ -13,6 +13,12 @@ abstract class NoteDao {
     @Query("SELECT * FROM notes WHERE id = :id")
     abstract fun getById(id: Int): Observable<NoteEntity>
 
+    @Query("SELECT * FROM notes WHERE title LIKE '%' || :titleOrContent || '%' OR content LIKE '%' || :titleOrContent || '%'")
+    abstract fun getAllByTitleOrContent(titleOrContent: String): Observable<List<NoteEntity>>
+
+    @Query("SELECT * FROM notes WHERE archived = :archived")
+    abstract fun getAllByArchived(archived: Boolean): Observable<List<NoteEntity>>
+
     @Query("SELECT * FROM notes")
     abstract fun getAll(): Observable<List<NoteEntity>>
 

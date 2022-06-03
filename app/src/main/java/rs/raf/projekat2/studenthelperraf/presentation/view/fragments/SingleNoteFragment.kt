@@ -58,7 +58,10 @@ class SingleNoteFragment : Fragment(R.layout.fragment_single_note) {
         binding.noteEditBtn.setOnClickListener {
             val title = binding.noteTitle.text.toString()
             val content = binding.noteContent.text.toString()
-            this.mainViewModel.updateNote(this.id!!, title, content, false)
+            val archived = arguments?.getBoolean("noteArchived")
+            if (archived != null) {
+                this.mainViewModel.updateNote(this.id!!, title, content, archived)
+            }
             activity?.supportFragmentManager?.beginTransaction()
                 ?.replace(R.id.main_fragment_container, MainFragment())
                 ?.addToBackStack(null)?.commit()

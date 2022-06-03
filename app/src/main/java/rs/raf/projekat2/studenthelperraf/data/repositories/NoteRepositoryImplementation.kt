@@ -33,9 +33,39 @@ class NoteRepositoryImplementation(
             }
     }
 
+    override fun getAllByTitleOrContent(titleOrContent: String): Observable<List<Note>> {
+        return localDataSource
+            .getAllByTitleOrContent(titleOrContent)
+            .map {
+                it.map {
+                    Note(
+                        it.id,
+                        it.title,
+                        it.content,
+                        it.archived
+                    )
+                }
+            }
+    }
+
     override fun getAll(): Observable<List<Note>> {
         return localDataSource
             .getAll()
+            .map {
+                it.map {
+                    Note(
+                        it.id,
+                        it.title,
+                        it.content,
+                        it.archived
+                    )
+                }
+            }
+    }
+
+    override fun getAllByArchived(archived: Boolean): Observable<List<Note>> {
+        return localDataSource
+            .getAllByArchived(archived)
             .map {
                 it.map {
                     Note(

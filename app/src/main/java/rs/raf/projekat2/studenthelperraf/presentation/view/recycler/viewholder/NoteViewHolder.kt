@@ -23,13 +23,14 @@ class NoteViewHolder (private val itemBinding: LayoutItemNoteBinding, private va
             arguments.putInt("noteId", note.id)
             arguments.putString("noteTitle", note.title)
             arguments.putString("noteContent", note.content)
+            arguments.putBoolean("noteArchived", note.archived)
             fragment.arguments = arguments
             activity.supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_container, fragment)
                 .addToBackStack(null).commit()
         }
         itemBinding.noteArchiveBtn.setOnClickListener {
-            //mainViewModel.deleteNote(note.id)
+            mainViewModel.updateNote(note.id, note.title, note.content, !note.archived)
         }
     }
 }

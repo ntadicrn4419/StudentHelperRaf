@@ -26,6 +26,8 @@ interface MainContract {
 
         fun getAllNotes()
         fun getNoteById(id: Int)
+        fun getNotesByTitleOrContent(titleOrContent: String)
+        fun getNotesByArchived(archived: Boolean)
         fun addNote(note: Note)
         fun deleteNote(id: Int)
         fun updateNote(id: Int, title: String, content: String, archived: Boolean)

@@ -32,6 +32,7 @@ class MainViewModel(
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
     private val publishSubjectMyFilter : PublishSubject<MyFilter> = PublishSubject.create()
     private val publishSubjectForNote: PublishSubject<Int> = PublishSubject.create()
+    private val publishSubjectForArchivedNotes: PublishSubject<Boolean> = PublishSubject.create()
 
     init {
 //        val subscription = publishSubject
@@ -201,6 +202,55 @@ class MainViewModel(
                 }
             )
         subscriptions.add(subscription7)
+        //--------------------------------------------------------------------------------
+        val subscription8 = publishSubject
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .distinctUntilChanged()
+            .switchMap {
+                noteRepository
+                    .getAllByTitleOrContent(it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError {
+                        Timber.e("Error in publish subject for note")
+                        Timber.e(it)
+                    }
+            }
+            .subscribe(
+                {
+                    localNoteState.value = ForLocalNoteState.SuccessfullyGotFilteredNotes(it)
+                },
+                {
+                    localNoteState.value = ForLocalNoteState.Error("Error happened while fetching data from db")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription8)
+        //--------------------------------------------------------------------------------
+//        val subscription9 = publishSubjectForArchivedNotes
+//            .debounce(200, TimeUnit.MILLISECONDS)
+//            .distinctUntilChanged()
+//            .switchMap {
+//                noteRepository
+//                    .getAllByArchived(it)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .doOnError {
+//                        Timber.e("Error in publish subject for note")
+//                        Timber.e(it)
+//                    }
+//            }
+//            .subscribe(
+//                {
+//                    localNoteState.value = ForLocalNoteState.SuccessfullyGotNonArchiveNotes(it)
+//                },
+//                {
+//                    localNoteState.value = ForLocalNoteState.Error("Error happened while fetching data from db")
+//                    Timber.e(it)
+//                }
+//            )
+//        subscriptions.add(subscription9)
+
 
     }
 
@@ -303,7 +353,7 @@ class MainViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    localNoteState.value = ForLocalNoteState.Success(it)
+                    localNoteState.value = ForLocalNoteState.SuccessfullyGotAllNotes(it)
                 },
                 {
                     localNoteState.value = ForLocalNoteState.Error("Error happened while fetching notes from db")
@@ -336,7 +386,7 @@ class MainViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    localNoteState.value = ForLocalNoteState.DeletedNote("Successfully updated note.")
+                    localNoteState.value = ForLocalNoteState.UpdatedNote("Successfully updated note.")
                 },
                 {
                     localNoteState.value = ForLocalNoteState.Error("Error happened while updating note")
@@ -348,6 +398,27 @@ class MainViewModel(
 
     override fun getNoteById(id: Int){
         publishSubjectForNote.onNext(id)
+    }
+
+    override fun getNotesByTitleOrContent(titleOrContent: String) {
+        publishSubject.onNext(titleOrContent)
+    }
+
+    override fun getNotesByArchived(archived: Boolean) {
+        val subscription = noteRepository
+            .getAllByArchived(archived)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    localNoteState.value = ForLocalNoteState.SuccessfullyGotNonArchiveNotes(it)
+                },
+                {
+                    localNoteState.value = ForLocalNoteState.Error("Error happened while fetching notes from db")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
     }
 
     override fun onCleared() {

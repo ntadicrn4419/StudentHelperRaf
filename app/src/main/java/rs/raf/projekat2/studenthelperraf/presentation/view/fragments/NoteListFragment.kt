@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,8 +41,8 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
     }
 
     private fun init() {
-        initUi()
         initObservers()
+        initUi()
     }
 
     private fun initUi() {
@@ -55,6 +55,23 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             activity?.supportFragmentManager?.beginTransaction()
                 ?.replace(R.id.main_fragment_container, NewNoteFragment())
                 ?.addToBackStack(null)?.commit()
+        }
+        binding.searchNotes.doAfterTextChanged {
+            val filter = it.toString()
+            mainViewModel.getNotesByTitleOrContent(filter)
+        }
+        binding.switchBtn.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                println("switch on")
+                //prikazati sve beleske
+                //mainViewModel.getAllNotes()
+                mainViewModel.getNotesByArchived(true)
+            }
+            else {
+                println("switch off")
+                //prikazati samo one koje nisu archived, tj. one ciji archived=false
+                mainViewModel.getNotesByArchived(false)
+            }
         }
     }
 
@@ -69,14 +86,33 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             Timber.e(it.toString())
             renderState(it)
         })
-        mainViewModel.getAllNotes()
+        //mainViewModel.getAllNotes()
+        mainViewModel.getNotesByArchived(false)
+
     }
 
     private fun renderState(state: ForLocalNoteState) {
         when (state) {
-            is ForLocalNoteState.Success -> {
+            is ForLocalNoteState.SuccessfullyGotAllNotes -> {
                 adapter.submitList(state.notes)
-                binding.noteRv.isVisible=true
+            }
+            is ForLocalNoteState.SuccessfullyGotFilteredNotes -> {
+                adapter.submitList(state.notes)
+            }
+            is ForLocalNoteState.SuccessfullyGotNonArchiveNotes -> {
+                adapter.submitList(state.notes)
+            }
+            is ForLocalNoteState.UpdatedNote -> {
+                Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
+            }
+            is ForLocalNoteState.DeletedNote -> {
+                Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
+            }
+            is ForLocalNoteState.GetNote -> {
+                Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
+            }
+            is ForLocalNoteState.AddedNote -> {
+                Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
             }
             is ForLocalNoteState.Error -> {
                 Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
