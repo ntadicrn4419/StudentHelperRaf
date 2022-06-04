@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initFragment() {
         val transaction = supportFragmentManager.beginTransaction()
+        transaction.setReorderingAllowed(true)
         transaction.add(R.id.main_fragment_container, MainFragment())
         transaction.commit()
     }

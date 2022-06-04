@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rs.raf.projekat2.studenthelperraf.R
+import rs.raf.projekat2.studenthelperraf.data.models.Note
 import rs.raf.projekat2.studenthelperraf.databinding.FragmentNoteListBinding
 import rs.raf.projekat2.studenthelperraf.presentation.contract.MainContract
 import rs.raf.projekat2.studenthelperraf.presentation.view.recycler.adapter.NoteAdapter
@@ -51,9 +52,9 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
     private fun initListeners() {
         binding.newNoteBtn.setOnClickListener {
-            activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.main_fragment_container, NewNoteFragment())
-                ?.addToBackStack(null)?.commit()
+            parentFragmentManager.beginTransaction().setReorderingAllowed(true)
+                .replace(R.id.main_fragment_container, NewNoteFragment())
+                .addToBackStack(null).commit()
         }
         binding.searchNotes.doAfterTextChanged {
             val filter = it.toString()
@@ -80,25 +81,26 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         binding.noteRv.adapter = adapter
     }
 
-    private fun funDeleteBtnListener(noteId: Int){
-        mainViewModel.deleteNote(noteId)
+    private fun funDeleteBtnListener(note: Note){
+        mainViewModel.deleteNote(note.id)
     }
 
-    private fun funEditBtnListener(noteId: Int, noteTitle: String, noteContent: String, noteArchived: Boolean){
+    private fun funEditBtnListener(note: Note){
         val fragment = SingleNoteFragment()
         val arguments = Bundle()
-        arguments.putInt("noteId", noteId)
-        arguments.putString("noteTitle", noteTitle)
-        arguments.putString("noteContent", noteContent)
-        arguments.putBoolean("noteArchived", noteArchived)
+        arguments.putInt("noteId", note.id)
+        arguments.putString("noteTitle", note.title)
+        arguments.putString("noteContent", note.content)
+        arguments.putBoolean("noteArchived", note.archived)
         fragment.arguments = arguments
-        activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.main_fragment_container, fragment)
-            ?.addToBackStack(null)?.commit()
+        parentFragmentManager.beginTransaction()
+            .setReorderingAllowed(true)
+            .replace(R.id.main_fragment_container, fragment)
+            .commit()
     }
 
-    private fun funArchiveBtnListener(noteId: Int, noteTitle: String, noteContent: String, noteArchived: Boolean){
-        mainViewModel.updateNote(noteId, noteTitle, noteContent, !noteArchived)
+    private fun funArchiveBtnListener(note: Note){
+        mainViewModel.updateNote(note.id, note.title, note.content, !note.archived)
     }
 
     private fun initObservers() {

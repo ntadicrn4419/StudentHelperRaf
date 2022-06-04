@@ -9,14 +9,21 @@ import rs.raf.projekat2.studenthelperraf.presentation.view.recycler.diff.NoteDif
 import rs.raf.projekat2.studenthelperraf.presentation.view.recycler.viewholder.NoteViewHolder
 
 class NoteAdapter(
-    private val funDeleteListener: (noteId: Int) -> Unit,
-    private val funEditListener: (noteId: Int, noteTitle: String, noteContent: String, noteArchived: Boolean) -> Unit,
-    private val funArchiveListener: (noteId: Int, noteTitle: String, noteContent: String, noteArchived: Boolean) -> Unit
-) : ListAdapter<Note, NoteViewHolder>(NoteDiffCallback())  {
+    private val funDeleteListener: (note: Note) -> Unit,
+    private val funEditListener: (note: Note) -> Unit,
+    private val funArchiveListener: (note: Note) -> Unit
+) : ListAdapter<Note, NoteViewHolder>(NoteDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val itemBinding = LayoutItemNoteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return NoteViewHolder(itemBinding, this.funDeleteListener, this.funEditListener, this.funArchiveListener)
+        val itemBinding =
+            LayoutItemNoteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return NoteViewHolder(
+            itemBinding,
+            {this.funDeleteListener(getItem(it))},
+            {this.funEditListener(getItem(it))},
+            {this.funArchiveListener(getItem(it))}
+        )
+
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {

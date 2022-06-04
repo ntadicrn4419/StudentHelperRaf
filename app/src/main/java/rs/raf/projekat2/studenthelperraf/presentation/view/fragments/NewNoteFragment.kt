@@ -44,9 +44,11 @@ class NewNoteFragment : Fragment(R.layout.fragment_new_note) {
 
     private fun initListeners() {
         binding.closeBtn.setOnClickListener {
-            activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.main_fragment_container, MainFragment())
-                ?.addToBackStack(null)?.commit()
+//            parentFragmentManager.beginTransaction()
+//              .setReorderingAllowed(true)
+//              .replace(R.id.main_fragment_container, MainFragment())
+//              .addToBackStack(null)?.commit()
+            parentFragmentManager.popBackStackImmediate()
         }
         binding.saveBtn.setOnClickListener {
             val noteTitle = binding.noteTitle.text.toString()
@@ -64,9 +66,15 @@ class NewNoteFragment : Fragment(R.layout.fragment_new_note) {
             val noteToAdd = Note( id.toInt(), noteTitle, noteContent, false)
             mainViewModel.addNote(noteToAdd)
 
-            activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.main_fragment_container, MainFragment())
-                ?.addToBackStack(null)?.commit()
+//            parentFragmentManager.beginTransaction()
+//                .replace(R.id.main_fragment_container, MainFragment())
+//                .addToBackStack(null)?.commit()
+            parentFragmentManager.popBackStackImmediate()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

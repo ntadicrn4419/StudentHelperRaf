@@ -51,9 +51,11 @@ class SingleNoteFragment : Fragment(R.layout.fragment_single_note) {
 
     private fun initListeners() {
         binding.closeBtn.setOnClickListener {
-            activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.main_fragment_container, MainFragment())
-                ?.addToBackStack(null)?.commit()
+            parentFragmentManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.main_fragment_container, MainFragment())
+                .addToBackStack(null)
+                .commit()
         }
         binding.noteEditBtn.setOnClickListener {
             val title = binding.noteTitle.text.toString()
@@ -62,9 +64,11 @@ class SingleNoteFragment : Fragment(R.layout.fragment_single_note) {
             if (archived != null) {
                 this.mainViewModel.updateNote(this.id!!, title, content, archived)
             }
-            activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.main_fragment_container, MainFragment())
-                ?.addToBackStack(null)?.commit()
+            parentFragmentManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.main_fragment_container, MainFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 
