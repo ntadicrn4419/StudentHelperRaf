@@ -13,4 +13,11 @@ interface NoteRepository {
     fun delete(id: Int): Completable
     fun deleteAll(): Completable
     fun update(id: Int, title: String, content: String, archived: Boolean): Completable
+
+    fun getNumberOfNotesOneDayAgo(): Observable<Int>
+    fun getNumberOfNotesTwoDaysAgo(): Observable<Int>
+    fun getNumberOfNotesThreeDaysAgo(): Observable<Int>
+    fun getNumberOfNotesFourDaysAgo(): Observable<Int>
+    fun getNumberOfNotesFiveDaysAgo(): Observable<Int>
+
 }

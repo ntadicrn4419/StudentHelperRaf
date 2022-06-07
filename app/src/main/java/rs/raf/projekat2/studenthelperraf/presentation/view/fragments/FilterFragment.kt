@@ -16,6 +16,7 @@ import rs.raf.projekat2.studenthelperraf.data.models.MyFilter
 import rs.raf.projekat2.studenthelperraf.databinding.FragmentFilterBinding
 import rs.raf.projekat2.studenthelperraf.presentation.contract.MainContract
 import rs.raf.projekat2.studenthelperraf.presentation.view.recycler.adapter.TermAdapter
+import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForLocalTermState
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForRemoteTermState
 import rs.raf.projekat2.studenthelperraf.presentation.viewmodel.MainViewModel
 import timber.log.Timber
@@ -38,12 +39,13 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.e("metoda onViewCreated")
         init()
     }
 
     private fun init() {
-        initUi()
         initObservers()
+        initUi()
     }
 
     private fun initUi() {
@@ -80,12 +82,19 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             val group = binding.groupFilter.selectedItem.toString()
             val day = binding.dayFilter.selectedItem.toString()
             val teacherOrSubject = binding.inputEt.text.toString()
-            if(group != null && day != null && teacherOrSubject != null &&
-               group != "" && day != "" && teacherOrSubject != ""){
-                val filter = MyFilter(group, day, teacherOrSubject)
-                mainViewModel.getTermsByAllFilters(filter)
-            }else{
-                Toast.makeText(activity,"Wrong filters. You have to fill all fields.",Toast.LENGTH_LONG).show();
+            val filter = MyFilter(group, day, teacherOrSubject)
+
+            Timber.e("Ovo je filter: " + filter.group + ", " + filter.day + ", " + filter.teacherOrSubject)
+
+            when{
+                group != "Group" && day != "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByAllFilters(filter)
+                group == "Group" && day != "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByDayAndTeacherSubject(filter)
+                group != "Group" && day == "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByGroupAndTeacherSubject(filter)
+                group == "Group" && day == "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByTeacherSubject(filter)
+                group != "Group" && day == "Day" && teacherOrSubject == "" -> mainViewModel.getTermsByGroup(filter)
+                group == "Group" && day != "Day" && teacherOrSubject == "" -> mainViewModel.getTermsByDay(filter)
+                group != "Group" && day != "Day" && teacherOrSubject == "" -> mainViewModel.getTermsByGroupAndDay(filter)
+                group == "Group" && day == "Day" && teacherOrSubject == "" -> mainViewModel.getAllTerms()
             }
         }
     }
@@ -93,28 +102,65 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     private fun initObservers() {
         mainViewModel.remoteTermState.observe(viewLifecycleOwner, Observer {
             Timber.e(it.toString())
-            renderState(it)
+            renderRemoteTermState(it)
+        })
+        mainViewModel.localTermState.observe(viewLifecycleOwner, Observer {
+            Timber.e(it.toString())
+            renderLocalTermState(it)
         })
         mainViewModel.getAllTerms()
         mainViewModel.fetchAllTerms()
     }
 
-    private fun renderState(state: ForRemoteTermState) {
+    private fun renderRemoteTermState(state: ForRemoteTermState) {
         when (state) {
-            is ForRemoteTermState.Success -> {
+            is ForRemoteTermState.SuccessRemoteState -> {
                 showLoadingState(false)
                 adapter.submitList(state.terms)
             }
-            is ForRemoteTermState.Error -> {
+            is ForRemoteTermState.ErrorRemoteState -> {
                 showLoadingState(false)
                 Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
             }
-            is ForRemoteTermState.DataFetched -> {
+            is ForRemoteTermState.DataFetchedRemoteState -> {
                 showLoadingState(false)
                 Toast.makeText(context, "Fresh data fetched from the server", Toast.LENGTH_LONG).show()
             }
-            is ForRemoteTermState.Loading -> {
+            is ForRemoteTermState.LoadingRemoteState -> {
                 showLoadingState(true)
+            }
+        }
+    }
+
+    private fun renderLocalTermState(state: ForLocalTermState) {
+        when (state) {
+            is ForLocalTermState.SuccessfullyGotAll -> {
+                adapter.submitList(state.terms)
+            }
+            is ForLocalTermState.SuccessfullyGotByAllFilters -> {
+                adapter.submitList(state.terms)
+            }
+            is ForLocalTermState.SuccessfullyGotByDayAndTeacherSubject -> {
+                adapter.submitList(state.terms)
+            }
+            is ForLocalTermState.SuccessfullyGotByGroupAndTeacherSubject -> {
+                adapter.submitList(state.terms)
+            }
+            is ForLocalTermState.SuccessfullyGotByGroupAndDay -> {
+                adapter.submitList(state.terms)
+            }
+            is ForLocalTermState.SuccessfullyGotByDay -> {
+                adapter.submitList(state.terms)
+            }
+            is ForLocalTermState.SuccessfullyGotByTeacherOrSubject -> {
+                adapter.submitList(state.terms)
+            }
+            is ForLocalTermState.SuccessfullyGotByGroup -> {
+                adapter.submitList(state.terms)
+            }
+            is ForLocalTermState.ErrorLocalState -> {
+                showLoadingState(false)
+                Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -4,5 +4,6 @@ data class Note (
     val id: Int,
     val title: String,
     val content: String,
-    val archived: Boolean
+    val archived: Boolean,
+    val dateCreated: String
 )

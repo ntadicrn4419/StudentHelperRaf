@@ -56,9 +56,9 @@ class TermRepositoryImplementation(
             }
     }
 
-    override fun getAllBySubject(subject: String): Observable<List<Term>> {
+    override fun getAllByTeacherOrSubject(teacherOrSubject: String): Observable<List<Term>> {
         return localDataSource
-            .getBySubject(subject)
+            .getByTeacherOrSubject(teacherOrSubject)
             .map {
                 it.map {
                     Term(
@@ -94,24 +94,6 @@ class TermRepositoryImplementation(
             }
     }
 
-    override fun getAllByTeacher(teacher: String): Observable<List<Term>> {
-        return localDataSource
-            .getByTeacher(teacher)
-            .map {
-                it.map {
-                    Term(
-                        it.id,
-                        it.subject,
-                        it.type,
-                        it.teacher,
-                        it.groups,
-                        it.day,
-                        it.time,
-                        it.classroom
-                    )
-                }
-            }
-    }
 
     override fun getAllByDay(day: String): Observable<List<Term>> {
         return localDataSource
@@ -131,10 +113,47 @@ class TermRepositoryImplementation(
                 }
             }
     }
-
-    override fun getAllByTime(time: String): Observable<List<Term>> {
+    override fun getAllByDayAndTeacherSubject(day: String, teacherOrSubject: String): Observable<List<Term>> {
         return localDataSource
-            .getByTime(time)
+            .getByDayAndTeacherSubject(day, teacherOrSubject)
+            .map {
+                it.map {
+                    Term(
+                        it.id,
+                        it.subject,
+                        it.type,
+                        it.teacher,
+                        it.groups,
+                        it.day,
+                        it.time,
+                        it.classroom
+                    )
+                }
+            }
+    }
+
+    override fun getAllByGroupAndTeacherSubject(group: String, teacherOrSubject: String): Observable<List<Term>> {
+        return localDataSource
+            .getByGroupAndTeacherSubject(group, teacherOrSubject)
+            .map {
+                it.map {
+                    Term(
+                        it.id,
+                        it.subject,
+                        it.type,
+                        it.teacher,
+                        it.groups,
+                        it.day,
+                        it.time,
+                        it.classroom
+                    )
+                }
+            }
+    }
+
+    override fun getAllByGroupAndDay(group: String, day: String): Observable<List<Term>> {
+        return localDataSource
+            .getByGroupAndDay(group, day)
             .map {
                 it.map {
                     Term(

@@ -31,4 +31,27 @@ abstract class NoteDao {
     @Transaction
     @Query("UPDATE notes SET title = :title, content = :content, archived = :archived WHERE id = :id")
     abstract fun update(id:Int, title: String, content: String, archived: Boolean): Completable
+
+    //date('now','-4 day')
+    //SELECT COUNT(*) from notes where noteDate = date('now','-4 day')
+    @Transaction
+    @Query("SELECT COUNT(*) from notes where dateCreated = date('now','-1 day')")
+    abstract fun getNumberOfNotesOneDayAgo(): Observable<Int>
+
+    @Transaction
+    @Query("SELECT COUNT(*) from notes where dateCreated = date('now','-2 day')")
+    abstract fun getNumberOfNotesTwoDaysAgo(): Observable<Int>
+
+    @Transaction
+    @Query("SELECT COUNT(*) from notes where dateCreated = date('now','-3 day')")
+    abstract fun getNumberOfNotesThreeDaysAgo(): Observable<Int>
+
+    @Transaction
+    @Query("SELECT COUNT(*) from notes where dateCreated = date('now','-4 day')")
+    abstract fun getNumberOfNotesFourDaysAgo(): Observable<Int>
+
+    @Transaction
+    @Query("SELECT COUNT(*) from notes where dateCreated = date('now','-5 day')")
+    abstract fun getNumberOfNotesFiveDaysAgo(): Observable<Int>
+
 }

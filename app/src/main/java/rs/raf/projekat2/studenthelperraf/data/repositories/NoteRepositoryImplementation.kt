@@ -15,7 +15,8 @@ class NoteRepositoryImplementation(
             NoteEntity(
                 note.title,
                 note.content,
-                note.archived
+                note.archived,
+                note.dateCreated
             )
         return localDataSource.insert(noteEntity)
     }
@@ -28,7 +29,8 @@ class NoteRepositoryImplementation(
                     it.id,
                     it.title,
                     it.content,
-                    it.archived
+                    it.archived,
+                    it.dateCreated
                 )
             }
     }
@@ -42,7 +44,8 @@ class NoteRepositoryImplementation(
                         it.id,
                         it.title,
                         it.content,
-                        it.archived
+                        it.archived,
+                        it.dateCreated
                     )
                 }
             }
@@ -57,7 +60,8 @@ class NoteRepositoryImplementation(
                         it.id,
                         it.title,
                         it.content,
-                        it.archived
+                        it.archived,
+                        it.dateCreated
                     )
                 }
             }
@@ -72,7 +76,8 @@ class NoteRepositoryImplementation(
                         it.id,
                         it.title,
                         it.content,
-                        it.archived
+                        it.archived,
+                        it.dateCreated
                     )
                 }
             }
@@ -88,5 +93,25 @@ class NoteRepositoryImplementation(
 
     override fun update(id: Int, title: String, content: String, archived: Boolean): Completable {
         return localDataSource.update(id, title, content, archived)
+    }
+
+    override fun getNumberOfNotesOneDayAgo(): Observable<Int>{
+        return localDataSource.getNumberOfNotesOneDayAgo()
+    }
+
+    override fun getNumberOfNotesTwoDaysAgo(): Observable<Int>{
+        return localDataSource.getNumberOfNotesTwoDaysAgo()
+    }
+
+    override fun getNumberOfNotesThreeDaysAgo(): Observable<Int>{
+        return localDataSource.getNumberOfNotesThreeDaysAgo()
+    }
+
+    override fun getNumberOfNotesFourDaysAgo(): Observable<Int>{
+        return localDataSource.getNumberOfNotesFourDaysAgo()
+    }
+
+    override fun getNumberOfNotesFiveDaysAgo(): Observable<Int>{
+        return localDataSource.getNumberOfNotesFiveDaysAgo()
     }
 }

@@ -29,21 +29,24 @@ abstract class TermDao {
             "AND day = :day AND (teacher LIKE '%' || :teacherOrSubject || '%' OR subject LIKE '%' || :teacherOrSubject || '%')")
     abstract fun getByAllFilters(group: String, day: String, teacherOrSubject: String): Observable<List<TermEntity>>
 
-    //Ne koriste se dalje ove metode; Mozda zatrebaju posle.
-    @Query("SELECT * FROM terms WHERE subject LIKE :subject || '%'")
-    abstract fun getBySubject(subject: String): Observable<List<TermEntity>>
+    @Query("SELECT * FROM terms WHERE teacher LIKE '%' || :teacherOrSubject || '%' OR subject LIKE '%' || :teacherOrSubject || '%'")
+    abstract fun getByTeacherOrSubject(teacherOrSubject: String): Observable<List<TermEntity>>
 
     @Query("SELECT * FROM terms WHERE groups LIKE '%' || :group || '%'")
     abstract fun getByGroup(group: String): Observable<List<TermEntity>>
 
-    @Query("SELECT * FROM terms WHERE teacher = :teacher")
-    abstract fun getByTeacher(teacher: String): Observable<List<TermEntity>>
-
     @Query("SELECT * FROM terms WHERE day = :day")
     abstract fun getByDay(day: String): Observable<List<TermEntity>>
 
-    @Query("SELECT * FROM terms WHERE time LIKE '%' || :time || '%'")
-    abstract fun getByTime(time: String): Observable<List<TermEntity>>
+    @Query("SELECT * FROM terms WHERE day = :day AND " +
+            "(teacher LIKE '%' || :teacherOrSubject || '%' OR subject LIKE '%' || :teacherOrSubject || '%')")
+    abstract fun getByDayAndTeacherSubject(day: String, teacherOrSubject: String): Observable<List<TermEntity>>
 
+    @Query("SELECT * FROM terms WHERE groups LIKE '%' || :group || '%' AND " +
+            "(teacher LIKE '%' || :teacherOrSubject || '%' OR subject LIKE '%' || :teacherOrSubject || '%')")
+    abstract fun getByGroupAndTeacherSubject(group: String, teacherOrSubject: String): Observable<List<TermEntity>>
+
+    @Query("SELECT * FROM terms WHERE groups LIKE '%' || :group || '%' AND day = :day")
+    abstract fun getByGroupAndDay(group: String, day: String): Observable<List<TermEntity>>
 
 }

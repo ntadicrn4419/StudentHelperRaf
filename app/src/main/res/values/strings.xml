@@ -18,6 +18,7 @@
 
 
     <string-array name="group_filter_array">
+        <item>Group</item>
         <item>101</item>
         <item>102</item>
         <item>103</item>
@@ -79,6 +80,7 @@
     </string-array>
 
     <string-array name="day_filter_array">
+        <item>Day</item>
         <item>PON</item>
         <item>UTO</item>
         <item>SRE</item>

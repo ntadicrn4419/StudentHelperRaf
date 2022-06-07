@@ -29,7 +29,5 @@ class NoteViewHolder (
     fun bind(note: Note) {
         itemBinding.noteTitle.text = note.title
         itemBinding.noteContent.text = note.content
-
-
     }
 }

@@ -12,6 +12,8 @@ import rs.raf.projekat2.studenthelperraf.data.models.Note
 import rs.raf.projekat2.studenthelperraf.databinding.FragmentNewNoteBinding
 import rs.raf.projekat2.studenthelperraf.presentation.contract.MainContract
 import rs.raf.projekat2.studenthelperraf.presentation.viewmodel.MainViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class NewNoteFragment : Fragment(R.layout.fragment_new_note) {
@@ -63,7 +65,10 @@ class NewNoteFragment : Fragment(R.layout.fragment_new_note) {
             val temp: UUID = UUID.randomUUID()
             val id = temp.mostSignificantBits + temp.leastSignificantBits
 
-            val noteToAdd = Note( id.toInt(), noteTitle, noteContent, false)
+            val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val noteDateCreated: String = LocalDateTime.now().format(formatter)
+
+            val noteToAdd = Note(id.toInt(), noteTitle, noteContent, false, noteDateCreated)
             mainViewModel.addNote(noteToAdd)
 
 //            parentFragmentManager.beginTransaction()
