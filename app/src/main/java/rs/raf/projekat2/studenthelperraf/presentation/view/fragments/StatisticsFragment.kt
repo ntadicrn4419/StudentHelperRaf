@@ -22,7 +22,6 @@ import rs.raf.projekat2.studenthelperraf.R
 import rs.raf.projekat2.studenthelperraf.presentation.contract.MainContract
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForLocalNoteState
 import rs.raf.projekat2.studenthelperraf.presentation.viewmodel.MainViewModel
-import timber.log.Timber
 
 class StatisticsFragment  : Fragment(R.layout.fragment_statistics) {
 
@@ -59,23 +58,18 @@ class StatisticsFragment  : Fragment(R.layout.fragment_statistics) {
     private fun renderLocalNoteState(state: ForLocalNoteState) {
         when (state) {
             is ForLocalNoteState.GetNotesCountOneDayAgo -> {
-                Timber.e(state.toString())
                 this.Days1Ago = state.cnt
             }
             is ForLocalNoteState.GetNotesCountTwoDaysAgo -> {
-                Timber.e(state.toString())
                 this.Days2Ago = state.cnt
             }
             is ForLocalNoteState.GetNotesCountThreeDaysAgo -> {
-                Timber.e(state.toString())
                 this.Days3Ago = state.cnt
             }
             is ForLocalNoteState.GetNotesCountFourDaysAgo -> {
-                Timber.e(state.toString())
                 this.Days4Ago = state.cnt
             }
             is ForLocalNoteState.GetNotesCountFiveDaysAgo -> {
-                Timber.e(state.toString())
                 this.Days5Ago = state.cnt
             }
             is ForLocalNoteState.Error -> {
