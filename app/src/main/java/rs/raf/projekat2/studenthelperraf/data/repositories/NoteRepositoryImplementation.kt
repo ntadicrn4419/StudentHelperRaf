@@ -35,21 +35,38 @@ class NoteRepositoryImplementation(
             }
     }
 
-    override fun getAllByTitleOrContent(titleOrContent: String): Observable<List<Note>> {
-        return localDataSource
-            .getAllByTitleOrContent(titleOrContent)
-            .map {
-                it.map {
-                    Note(
-                        it.id,
-                        it.title,
-                        it.content,
-                        it.archived,
-                        it.dateCreated
-                    )
+    override fun getAllByTitleOrContent(titleOrContent: String, getArchived: Boolean): Observable<List<Note>> {
+        if(getArchived){
+            return localDataSource
+                .getAllByTitleOrContent(titleOrContent)
+                .map {
+                    it.map {
+                        Note(
+                            it.id,
+                            it.title,
+                            it.content,
+                            it.archived,
+                            it.dateCreated
+                        )
+                    }
                 }
-            }
+        }else{
+            return localDataSource
+                .getOnlyNonArchiveByTitleOrContent(titleOrContent)
+                .map {
+                    it.map {
+                        Note(
+                            it.id,
+                            it.title,
+                            it.content,
+                            it.archived,
+                            it.dateCreated
+                        )
+                    }
+                }
+        }
     }
+
 
     override fun getAll(): Observable<List<Note>> {
         return localDataSource
@@ -94,6 +111,7 @@ class NoteRepositoryImplementation(
     override fun update(id: Int, title: String, content: String, archived: Boolean): Completable {
         return localDataSource.update(id, title, content, archived)
     }
+
 
     override fun getNumberOfNotesOneDayAgo(): Observable<Int>{
         return localDataSource.getNumberOfNotesOneDayAgo()

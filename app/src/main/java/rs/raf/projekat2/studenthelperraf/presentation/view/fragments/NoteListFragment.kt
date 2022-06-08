@@ -58,19 +58,25 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         }
         binding.searchNotes.doAfterTextChanged {
             val filter = it.toString()
-            mainViewModel.getNotesByTitleOrContent(filter)
+            if(binding.switchBtn.isChecked){
+                mainViewModel.getNotesByTitleOrContent(filter, true)
+            }else{
+                mainViewModel.getNotesByTitleOrContent(filter, false)
+            }
+
         }
         binding.switchBtn.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 println("switch on")
                 //prikazati sve beleske
-                mainViewModel.getAllNotes()
-                //mainViewModel.getNotesByArchived(true)
+                //mainViewModel.getAllNotes()
+                mainViewModel.getNotesByTitleOrContent(binding.searchNotes.text.toString(), true)
             }
             else {
                 println("switch off")
                 //prikazati samo one koje nisu archived, tj. one ciji archived=false
-                mainViewModel.getNotesByArchived(false)
+                //mainViewModel.getNotesByArchived(false)
+                mainViewModel.getNotesByTitleOrContent(binding.searchNotes.text.toString(), false)
             }
         }
     }

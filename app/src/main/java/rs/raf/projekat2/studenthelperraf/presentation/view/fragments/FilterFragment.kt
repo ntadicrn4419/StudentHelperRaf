@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rs.raf.projekat2.studenthelperraf.R
-import rs.raf.projekat2.studenthelperraf.data.models.MyFilter
 import rs.raf.projekat2.studenthelperraf.databinding.FragmentFilterBinding
 import rs.raf.projekat2.studenthelperraf.presentation.contract.MainContract
 import rs.raf.projekat2.studenthelperraf.presentation.view.recycler.adapter.TermAdapter
@@ -82,18 +81,17 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             val group = binding.groupFilter.selectedItem.toString()
             val day = binding.dayFilter.selectedItem.toString()
             val teacherOrSubject = binding.inputEt.text.toString()
-            val filter = MyFilter(group, day, teacherOrSubject)
 
-            Timber.e("Ovo je filter: " + filter.group + ", " + filter.day + ", " + filter.teacherOrSubject)
+            Timber.e("Ovo je filter: " + group + ", " + day + ", " + teacherOrSubject)
 
             when{
-                group != "Group" && day != "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByAllFilters(filter)
-                group == "Group" && day != "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByDayAndTeacherSubject(filter)
-                group != "Group" && day == "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByGroupAndTeacherSubject(filter)
-                group == "Group" && day == "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByTeacherSubject(filter)
-                group != "Group" && day == "Day" && teacherOrSubject == "" -> mainViewModel.getTermsByGroup(filter)
-                group == "Group" && day != "Day" && teacherOrSubject == "" -> mainViewModel.getTermsByDay(filter)
-                group != "Group" && day != "Day" && teacherOrSubject == "" -> mainViewModel.getTermsByGroupAndDay(filter)
+                group != "Group" && day != "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByAllFilters(group, day, teacherOrSubject)
+                group == "Group" && day != "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByDayAndTeacherSubject(day, teacherOrSubject)
+                group != "Group" && day == "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByGroupAndTeacherSubject(group, teacherOrSubject)
+                group == "Group" && day == "Day" && teacherOrSubject != "" -> mainViewModel.getTermsByTeacherSubject(teacherOrSubject)
+                group != "Group" && day == "Day" && teacherOrSubject == "" -> mainViewModel.getTermsByGroup(group)
+                group == "Group" && day != "Day" && teacherOrSubject == "" -> mainViewModel.getTermsByDay(day)
+                group != "Group" && day != "Day" && teacherOrSubject == "" -> mainViewModel.getTermsByGroupAndDay(group, day)
                 group == "Group" && day == "Day" && teacherOrSubject == "" -> mainViewModel.getAllTerms()
             }
         }

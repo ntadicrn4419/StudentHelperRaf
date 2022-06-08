@@ -50,7 +50,7 @@ class StatisticsFragment  : Fragment(R.layout.fragment_statistics) {
     }
 
     private fun initObserver() {
-        mainViewModel.localNoteState.observe(viewLifecycleOwner, Observer {
+        mainViewModel.noteCountState.observe(viewLifecycleOwner, Observer {
             renderLocalNoteState(it)
         })
     }
@@ -81,12 +81,6 @@ class StatisticsFragment  : Fragment(R.layout.fragment_statistics) {
     @Composable
     fun Show() {
 
-//        val Days5Ago: Int = 50
-//        val Days4Ago: Int = 60
-//        val Days3Ago: Int = 20
-//        val Days2Ago: Int = 10
-//        val Days1Ago: Int = 30
-
         val list = listOf(Days1Ago, Days2Ago, Days3Ago, Days4Ago, Days5Ago)
         val max: Int = list.maxOrNull() ?: 0
 
@@ -104,8 +98,8 @@ class StatisticsFragment  : Fragment(R.layout.fragment_statistics) {
             var size4: Float = 0f
             var size5: Float = 0f
 
-            if(max * multiple > (canvasHeight-canvasHeight/3)){
-                val times = (max * multiple) / (canvasHeight-canvasHeight/3)
+            if(max * multiple > (canvasHeight/2)){
+                val times = (max * multiple) / (canvasHeight/2)
                 size5 = Days5Ago * (multiple / (times+1))
                 size4 = Days4Ago * (multiple / (times+1))
                 size3 = Days3Ago * (multiple / (times+1))

@@ -6,12 +6,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import rs.raf.projekat2.studenthelperraf.data.models.MyFilter
 import rs.raf.projekat2.studenthelperraf.data.models.Note
 import rs.raf.projekat2.studenthelperraf.data.models.Resource
 import rs.raf.projekat2.studenthelperraf.data.repositories.NoteRepository
 import rs.raf.projekat2.studenthelperraf.data.repositories.TermRepository
 import rs.raf.projekat2.studenthelperraf.presentation.contract.MainContract
+import rs.raf.projekat2.studenthelperraf.presentation.view.filters.MyNoteFilter
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForLocalNoteState
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForLocalTermState
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForRemoteTermState
@@ -27,193 +27,18 @@ class MainViewModel(
     override val remoteTermState: MutableLiveData<ForRemoteTermState> = MutableLiveData()
     override val localTermState: MutableLiveData<ForLocalTermState> = MutableLiveData()
     override val localNoteState: MutableLiveData<ForLocalNoteState> = MutableLiveData()
+    override val noteCountState: MutableLiveData<ForLocalNoteState> = MutableLiveData()
 
-    private val publishSubjectForTitleAndContentNote: PublishSubject<String> = PublishSubject.create()
 
-//    private val publishSubjectForAllFilters : PublishSubject<MyFilter> = PublishSubject.create()
-//    private val publishSubjectForDayAndTeacherSubject : PublishSubject<MyFilter> = PublishSubject.create()
-//    private val publishSubjectForGroupAndTeacherSubject : PublishSubject<MyFilter> = PublishSubject.create()
-//    private val publishSubjectForGroupAndDay : PublishSubject<MyFilter> = PublishSubject.create()
-//    private val publishSubjectForDay : PublishSubject<MyFilter> = PublishSubject.create()
-//    private val publishSubjectForTeacherOrSubject : PublishSubject<MyFilter> = PublishSubject.create()
-//    private val publishSubjectForGroup : PublishSubject<MyFilter> = PublishSubject.create()
-
+    private val publishSubjectForTitleAndContentNote: PublishSubject<MyNoteFilter> = PublishSubject.create()
 
     init {
-//        val subscription1 = publishSubjectForAllFilters
-//            .debounce(200, TimeUnit.MILLISECONDS)
-//            .distinctUntilChanged()
-//            .switchMap {
-//                termRepository
-//                    .getAllByAllFilters(it.group, it.day, it.teacherOrSubject)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError {
-//                        Timber.e("Error in publish subject doing getAllByAllFilters")
-//                        Timber.e(it)
-//                    }
-//            }
-//            .subscribe(
-//                {
-//                    localTermState.value = ForLocalTermState.SuccessfullyGotByAllFilters(it)
-//                },
-//                {
-//                    localTermState.value = ForLocalTermState.ErrorLocalState("Error happened while fetching data from db")
-//                    Timber.e(it)
-//                }
-//            )
-//        subscriptions.add(subscription1)
-//        //--------------------------------------------------------
-//        val subscription2 = publishSubjectForDayAndTeacherSubject
-//            .debounce(200, TimeUnit.MILLISECONDS)
-//            .distinctUntilChanged()
-//            .switchMap {
-//                termRepository
-//                    .getAllByDayAndTeacherSubject(it.day, it.teacherOrSubject)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError {
-//                        Timber.e("Error in publish subject")
-//                        Timber.e(it)
-//                    }
-//            }
-//            .subscribe(
-//                {
-//                    localTermState.value = ForLocalTermState.SuccessfullyGotByDayAndTeacherSubject(it)
-//                },
-//                {
-//                    localTermState.value = ForLocalTermState.ErrorLocalState("Error happened while fetching data from db")
-//                    Timber.e(it)
-//                }
-//            )
-//        subscriptions.add(subscription2)
-//        //---------------------------------------
-//        val subscription3 = publishSubjectForGroupAndTeacherSubject
-//            .debounce(200, TimeUnit.MILLISECONDS)
-//            .distinctUntilChanged()
-//            .switchMap {
-//                termRepository
-//                    .getAllByGroupAndTeacherSubject(it.group, it.teacherOrSubject)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError {
-//                        Timber.e("Error in publish subject")
-//                        Timber.e(it)
-//                    }
-//            }
-//            .subscribe(
-//                {
-//                    localTermState.value = ForLocalTermState.SuccessfullyGotByGroupAndTeacherSubject(it)
-//                },
-//                {
-//                    localTermState.value = ForLocalTermState.ErrorLocalState("Error happened while fetching data from db")
-//                    Timber.e(it)
-//                }
-//            )
-//        subscriptions.add(subscription3)
-//        //---------------------------------------
-//        val subscription4 = publishSubjectForGroupAndDay
-//            .debounce(200, TimeUnit.MILLISECONDS)
-//            .distinctUntilChanged()
-//            .switchMap {
-//                termRepository
-//                    .getAllByGroupAndDay(it.group, it.day)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError {
-//                        Timber.e("Error in publish subject")
-//                        Timber.e(it)
-//                    }
-//            }
-//            .subscribe(
-//                {
-//                    localTermState.value = ForLocalTermState.SuccessfullyGotByGroupAndDay(it)
-//                },
-//                {
-//                    localTermState.value = ForLocalTermState.ErrorLocalState("Error happened while fetching data from db")
-//                    Timber.e(it)
-//                }
-//            )
-//        subscriptions.add(subscription4)
-//        //---------------------------------------
-//        val subscription5 = publishSubjectForDay
-//            .debounce(200, TimeUnit.MILLISECONDS)
-//            .distinctUntilChanged()
-//            .switchMap {
-//                termRepository
-//                    .getAllByDay(it.day)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError {
-//                        Timber.e("Error in publish subject")
-//                        Timber.e(it)
-//                    }
-//            }
-//            .subscribe(
-//                {
-//                    localTermState.value = ForLocalTermState.SuccessfullyGotByDay(it)
-//                },
-//                {
-//                    localTermState.value = ForLocalTermState.ErrorLocalState("Error happened while fetching data from db")
-//                    Timber.e(it)
-//                }
-//            )
-//        subscriptions.add(subscription5)
-//        //---------------------------------------
-//        val subscription6 = publishSubjectForTeacherOrSubject
-//            .debounce(200, TimeUnit.MILLISECONDS)
-//            .distinctUntilChanged()
-//            .switchMap {
-//                termRepository
-//                    .getAllByTeacherOrSubject(it.teacherOrSubject)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError {
-//                        Timber.e("Error in publish subject")
-//                        Timber.e(it)
-//                    }
-//            }
-//            .subscribe(
-//                {
-//                    localTermState.value = ForLocalTermState.SuccessfullyGotByTeacherOrSubject(it)
-//                },
-//                {
-//                    localTermState.value = ForLocalTermState.ErrorLocalState("Error happened while fetching data from db")
-//                    Timber.e(it)
-//                }
-//            )
-//        subscriptions.add(subscription6)
-//        //---------------------------------------
-//        val subscription7 = publishSubjectForGroup
-//            .debounce(200, TimeUnit.MILLISECONDS)
-//            .distinctUntilChanged()
-//            .switchMap {
-//                termRepository
-//                    .getAllByGroup(it.group)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnError {
-//                        Timber.e("Error in publish subject")
-//                        Timber.e(it)
-//                    }
-//            }
-//            .subscribe(
-//                {
-//                    localTermState.value = ForLocalTermState.SuccessfullyGotByGroup(it)
-//                },
-//                {
-//                    localTermState.value = ForLocalTermState.ErrorLocalState("Error happened while fetching data from db")
-//                    Timber.e(it)
-//                }
-//            )
-//        subscriptions.add(subscription7)
-
-        val subscription10 = publishSubjectForTitleAndContentNote
+        val subscription = publishSubjectForTitleAndContentNote
             .debounce(200, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
             .switchMap {
                 noteRepository
-                    .getAllByTitleOrContent(it)
+                    .getAllByTitleOrContent(it.titleAndContent, it.getArchived)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnError {
@@ -230,8 +55,7 @@ class MainViewModel(
                     Timber.e(it)
                 }
             )
-        subscriptions.add(subscription10)
-
+        subscriptions.add(subscription)
     }
 
     override fun fetchAllTerms() {
@@ -273,31 +97,9 @@ class MainViewModel(
         subscriptions.add(subscription)
     }
 
-//    override fun getTermsByDayAndTeacherSubject(filter: MyFilter){
-//        publishSubjectForDayAndTeacherSubject.onNext(filter)
-//    }
-//    override fun getTermsByGroupAndTeacherSubject(filter: MyFilter){
-//        publishSubjectForGroupAndTeacherSubject.onNext(filter)
-//    }
-//    override fun getTermsByGroupAndDay(filter: MyFilter){
-//        publishSubjectForGroupAndDay.onNext(filter)
-//    }
-//    override fun getTermsByTeacherSubject(filter: MyFilter){
-//        publishSubjectForTeacherOrSubject.onNext(filter)
-//    }
-//    override fun getTermsByGroup(filter: MyFilter){
-//        publishSubjectForGroup.onNext(filter)
-//    }
-//    override fun getTermsByDay(filter: MyFilter){
-//        publishSubjectForDay.onNext(filter)
-//    }
-//    override fun getTermsByAllFilters(filter: MyFilter) {
-//        publishSubjectForAllFilters.onNext(filter)
-//    }
-
-    override fun getTermsByDayAndTeacherSubject(filter: MyFilter){
+    override fun getTermsByDayAndTeacherSubject(day: String, teacherOrSubject: String){
         val subscription = termRepository
-            .getAllByDayAndTeacherSubject(filter.day, filter.teacherOrSubject)
+            .getAllByDayAndTeacherSubject(day, teacherOrSubject)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -311,9 +113,9 @@ class MainViewModel(
             )
         subscriptions.add(subscription)
     }
-    override fun getTermsByGroupAndTeacherSubject(filter: MyFilter){
+    override fun getTermsByGroupAndTeacherSubject(group: String, teacherOrSubject: String){
         val subscription = termRepository
-            .getAllByGroupAndTeacherSubject(filter.group, filter.teacherOrSubject)
+            .getAllByGroupAndTeacherSubject(group, teacherOrSubject)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -327,9 +129,9 @@ class MainViewModel(
             )
         subscriptions.add(subscription)
     }
-    override fun getTermsByGroupAndDay(filter: MyFilter){
+    override fun getTermsByGroupAndDay(group: String, day: String){
         val subscription = termRepository
-            .getAllByGroupAndDay(filter.group, filter.day)
+            .getAllByGroupAndDay(group, day)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -343,9 +145,9 @@ class MainViewModel(
             )
         subscriptions.add(subscription)
     }
-    override fun getTermsByTeacherSubject(filter: MyFilter){
+    override fun getTermsByTeacherSubject(teacherOrSubject: String){
         val subscription = termRepository
-            .getAllByTeacherOrSubject(filter.teacherOrSubject)
+            .getAllByTeacherOrSubject(teacherOrSubject)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -359,9 +161,9 @@ class MainViewModel(
             )
         subscriptions.add(subscription)
     }
-    override fun getTermsByGroup(filter: MyFilter){
+    override fun getTermsByGroup(group: String){
         val subscription = termRepository
-            .getAllByGroup(filter.group)
+            .getAllByGroup(group)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -375,9 +177,9 @@ class MainViewModel(
             )
         subscriptions.add(subscription)
     }
-    override fun getTermsByDay(filter: MyFilter){
+    override fun getTermsByDay(day: String){
         val subscription = termRepository
-            .getAllByDay(filter.day)
+            .getAllByDay(day)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -391,9 +193,9 @@ class MainViewModel(
             )
         subscriptions.add(subscription)
     }
-    override fun getTermsByAllFilters(filter: MyFilter) {
+    override fun getTermsByAllFilters(group: String, day: String, teacherOrSubject: String) {
         val subscription = termRepository
-            .getAllByAllFilters(filter.group, filter.day, filter.teacherOrSubject)
+            .getAllByAllFilters(group, day, teacherOrSubject)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -475,6 +277,7 @@ class MainViewModel(
         subscriptions.add(subscription)
     }
 
+
     override fun getNumberOfNotesOneDayAgo(){
         val subscription = noteRepository
             .getNumberOfNotesOneDayAgo()
@@ -482,10 +285,10 @@ class MainViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    localNoteState.value = ForLocalNoteState.GetNotesCountOneDayAgo(it)
+                    noteCountState.value = ForLocalNoteState.GetNotesCountOneDayAgo(it)
                 },
                 {
-                    localNoteState.value = ForLocalNoteState.Error("Error happened while counting")
+                    noteCountState.value = ForLocalNoteState.Error("Error happened while counting")
                     Timber.e(it)
                 }
             )
@@ -498,10 +301,10 @@ class MainViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    localNoteState.value = ForLocalNoteState.GetNotesCountTwoDaysAgo(it)
+                    noteCountState.value = ForLocalNoteState.GetNotesCountTwoDaysAgo(it)
                 },
                 {
-                    localNoteState.value = ForLocalNoteState.Error("Error happened while counting")
+                    noteCountState.value = ForLocalNoteState.Error("Error happened while counting")
                     Timber.e(it)
                 }
             )
@@ -514,10 +317,10 @@ class MainViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    localNoteState.value = ForLocalNoteState.GetNotesCountThreeDaysAgo(it)
+                    noteCountState.value = ForLocalNoteState.GetNotesCountThreeDaysAgo(it)
                 },
                 {
-                    localNoteState.value = ForLocalNoteState.Error("Error happened while counting")
+                    noteCountState.value = ForLocalNoteState.Error("Error happened while counting")
                     Timber.e(it)
                 }
             )
@@ -530,10 +333,10 @@ class MainViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    localNoteState.value = ForLocalNoteState.GetNotesCountFourDaysAgo(it)
+                    noteCountState.value = ForLocalNoteState.GetNotesCountFourDaysAgo(it)
                 },
                 {
-                    localNoteState.value = ForLocalNoteState.Error("Error happened while counting")
+                    noteCountState.value = ForLocalNoteState.Error("Error happened while counting")
                     Timber.e(it)
                 }
             )
@@ -546,18 +349,18 @@ class MainViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    localNoteState.value = ForLocalNoteState.GetNotesCountFiveDaysAgo(it)
+                    noteCountState.value = ForLocalNoteState.GetNotesCountFiveDaysAgo(it)
                 },
                 {
-                    localNoteState.value = ForLocalNoteState.Error("Error happened while counting")
+                    noteCountState.value = ForLocalNoteState.Error("Error happened while counting")
                     Timber.e(it)
                 }
             )
         subscriptions.add(subscription)
     }
 
-    override fun getNotesByTitleOrContent(titleOrContent: String) {
-        publishSubjectForTitleAndContentNote.onNext(titleOrContent)
+    override fun getNotesByTitleOrContent(titleOrContent: String, getArchived: Boolean) {
+        publishSubjectForTitleAndContentNote.onNext(MyNoteFilter(titleOrContent, getArchived))
     }
 
     override fun getNotesByArchived(archived: Boolean) {
@@ -579,7 +382,7 @@ class MainViewModel(
     }
 
     override fun onCleared() {
+        subscriptions.clear()
         super.onCleared()
-        subscriptions.dispose()
     }
 }

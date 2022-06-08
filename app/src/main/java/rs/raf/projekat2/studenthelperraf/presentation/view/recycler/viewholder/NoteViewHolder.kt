@@ -13,8 +13,6 @@ class NoteViewHolder (
     init{
         itemBinding.noteDeleteBtn.setOnClickListener {
             funDeleteListener(layoutPosition)
-            //saljem position svuda
-            //if layoutPosiion out of screen, vezbe recycler
         }
 
         itemBinding.noteEditBtn.setOnClickListener {

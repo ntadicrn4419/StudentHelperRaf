@@ -37,7 +37,6 @@ class SingleNoteFragment : Fragment(R.layout.fragment_single_note) {
         val arguments = arguments
         this.id = arguments?.getInt("noteId")
         initUi()
-        initObservers()
     }
 
     private fun initUi() {
@@ -70,17 +69,6 @@ class SingleNoteFragment : Fragment(R.layout.fragment_single_note) {
                 .addToBackStack(null)
                 .commit()
         }
-    }
-
-    private fun initObservers() {
-//        mainViewModel.localNoteState.observe(viewLifecycleOwner, Observer {
-//            Timber.e(it.toString())
-//        })
-//        val arguments = arguments
-//        var str = arguments?.getInt("noteId")
-//        if (str != null) {
-//            mainViewModel.getNoteById(str.toInt())
-//        }
     }
 
 }

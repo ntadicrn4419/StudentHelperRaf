@@ -1,7 +1,6 @@
 package rs.raf.projekat2.studenthelperraf.presentation.contract
 
 import androidx.lifecycle.LiveData
-import rs.raf.projekat2.studenthelperraf.data.models.MyFilter
 import rs.raf.projekat2.studenthelperraf.data.models.Note
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForLocalNoteState
 import rs.raf.projekat2.studenthelperraf.presentation.view.states.ForLocalTermState
@@ -13,23 +12,23 @@ interface MainContract {
         val remoteTermState: LiveData<ForRemoteTermState>
         val localTermState: LiveData<ForLocalTermState>
         val localNoteState: LiveData<ForLocalNoteState>
+        val noteCountState: LiveData<ForLocalNoteState>
 
         fun fetchAllTerms()
         fun getAllTerms()
-        //fun addTerm(term: Term)
 
-        fun getTermsByDayAndTeacherSubject(filter: MyFilter)
-        fun getTermsByGroupAndTeacherSubject(filter: MyFilter)
-        fun getTermsByGroupAndDay(filter: MyFilter)
+        fun getTermsByDayAndTeacherSubject(day: String, teacherOrSubject: String)
+        fun getTermsByGroupAndTeacherSubject(group: String, teacherOrSubject: String)
+        fun getTermsByGroupAndDay(group: String, day: String)
 
-        fun getTermsByTeacherSubject(filter: MyFilter)
-        fun getTermsByGroup(filter: MyFilter)
-        fun getTermsByDay(filter: MyFilter)
-        fun getTermsByAllFilters(filter: MyFilter)
+        fun getTermsByTeacherSubject(teacherOrSubject: String)
+        fun getTermsByGroup(group: String)
+        fun getTermsByDay(day: String)
+        fun getTermsByAllFilters(group: String, day: String, teacherOrSubject: String)
 
         fun getAllNotes()
-        //fun getNoteById(id: Int)
-        fun getNotesByTitleOrContent(titleOrContent: String)
+        fun getNotesByTitleOrContent(titleOrContent: String, getArchived: Boolean)
+
         fun getNotesByArchived(archived: Boolean)
         fun addNote(note: Note)
         fun deleteNote(id: Int)

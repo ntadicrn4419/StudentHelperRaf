@@ -7,6 +7,7 @@ import rs.raf.projekat2.studenthelperraf.data.models.NoteEntity
 
 @Dao
 abstract class NoteDao {
+
     @Insert( onConflict = OnConflictStrategy.REPLACE )
     abstract fun insert(entity: NoteEntity): Completable
 
@@ -15,6 +16,9 @@ abstract class NoteDao {
 
     @Query("SELECT * FROM notes WHERE title LIKE '%' || :titleOrContent || '%' OR content LIKE '%' || :titleOrContent || '%'")
     abstract fun getAllByTitleOrContent(titleOrContent: String): Observable<List<NoteEntity>>
+
+    @Query("SELECT * FROM notes WHERE (title LIKE '%' || :titleOrContent || '%' OR content LIKE '%' || :titleOrContent || '%') AND archived=0")
+    abstract fun getOnlyNonArchiveByTitleOrContent(titleOrContent: String): Observable<List<NoteEntity>>
 
     @Query("SELECT * FROM notes WHERE archived = :archived")
     abstract fun getAllByArchived(archived: Boolean): Observable<List<NoteEntity>>
@@ -32,8 +36,7 @@ abstract class NoteDao {
     @Query("UPDATE notes SET title = :title, content = :content, archived = :archived WHERE id = :id")
     abstract fun update(id:Int, title: String, content: String, archived: Boolean): Completable
 
-    //date('now','-4 day')
-    //SELECT COUNT(*) from notes where noteDate = date('now','-4 day')
+
     @Transaction
     @Query("SELECT COUNT(*) from notes where dateCreated = date('now','-1 day')")
     abstract fun getNumberOfNotesOneDayAgo(): Observable<Int>

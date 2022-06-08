@@ -15,6 +15,7 @@ class StudentHelperApp : Application() {
     override fun onCreate() {
         super.onCreate()
         init()
+
     }
 
     private fun init() {
@@ -33,13 +34,9 @@ class StudentHelperApp : Application() {
         )
         startKoin {
             androidLogger(Level.ERROR)
-            // Use application context
             androidContext(this@StudentHelperApp)
-            // Use properties from assets/koin.properties
             androidFileProperties()
-            // Use koin fragment factory for fragment instantiation
             fragmentFactory()
-            // modules
             modules(modules)
         }
     }
